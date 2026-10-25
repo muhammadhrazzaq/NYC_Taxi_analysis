@@ -1,0 +1,16 @@
+definition_version: 2
+entities:
+  nyc_taxi_dashboard:
+    type: streamlit
+    identifier:
+      name: NYC_TAXI_DASHBOARD
+      database: APPS
+      schema: DASHBOARDS
+    title: "NYC Taxi Lakehouse"
+    main_file: streamlit_app.py
+    query_warehouse: DASH_WH
+    compute_pool: SYSTEM_COMPUTE_POOL_CPU
+    stage: STREAMLIT_STAGE
+    artifacts:
+      - streamlit_app.py
+      - pyproject.toml

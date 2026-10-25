@@ -1,0 +1,6 @@
+table_bucket_name = "nyc-taxi-iceberg-bucket"
+catalog_name      = "s3tablescatalog"
+snowflake_org              = ""
+snowflake_account          = ""
+snowflake_user             = ""
+snowflake_private_key_path = "~/.snowflake/terraform_svc.p8"
