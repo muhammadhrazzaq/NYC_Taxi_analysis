@@ -1,13 +1,40 @@
 # NYC Taxi Lakehouse
  
+
 An end-to-end lakehouse built on **Apache Iceberg**: PySpark builds a medallion pipeline (bronze → silver → gold) into **Amazon S3 Tables**, **Airflow** orchestrates it with data-quality gates, and **Athena** and **Snowflake** both query the same Iceberg tables in place, with no copies and no loading step. All infrastructure is defined in **Terraform**.
  
 **Data:** NYC TLC Yellow Taxi trips, January 2019 to June 2020 (18 monthly files, **101,246,797 rows**), plus the taxi zone lookup.
+
 ---
-Before running anything update the `/conf/spark-defaults.conf` file with your aws account and create the `.env` file
-Unzip the data.zip file in `data/raw` folder and zones data will go into the `reference` folder
----
- 
+## Before you start
+
+> ⚠️ Complete these steps before running anything.
+
+### 1. Configure Spark
+Edit `conf/spark-defaults.conf` and replace the placeholders with your AWS values:
+
+| Setting | Replace with |
+|---|---|
+| `spark.sql.catalog.s3tables.uri` | `https://glue.<AWS_REGION>.amazonaws.com/iceberg` |
+| `spark.sql.catalog.s3tables.warehouse` | `<AWS_ACCOUNT_ID>:s3tablescatalog/<TABLE_BUCKET_NAME>` |
+| `spark.sql.catalog.s3tables.rest.signing-region` | `<AWS_REGION>` |
+| `spark.sql.catalog.s3tables.client.region` | `<AWS_REGION>` |
+
+Keep `spark.sql.session.timeZone` set to **`UTC`**. Changing it shifts trip times by several hours.
+
+### 2. Create the `.env` file
+Create `.env` in the project root (it's git-ignored, so never commit it):
+```dotenv
+AWS_ACCESS_KEY_ID=<access key for the Spark IAM user>
+AWS_SECRET_ACCESS_KEY=<secret key>
+AWS_REGION=<AWS_REGION>
+AWS_DEFAULT_REGION=<AWS_REGION>
+AWS_ACCOUNT_ID=<AWS_ACCOUNT_ID>
+```
+
+### 3. Get the data
+Download `data.zip` from the [`data-v1` release](https://github.com/muhammadhrazzaq/NYC_Taxi_analysis/releases/tag/data-v1) and unzip it so the files land like this: 
+
 ## Architecture
  
 ```mermaid
